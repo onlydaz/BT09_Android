@@ -1,4 +1,4 @@
-package vn.iotstar.bt2_socket;
+package vn.iotstar.socket;
 
 import org.junit.Test;
 

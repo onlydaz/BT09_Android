@@ -107,16 +107,27 @@ public class UploadFileActivity extends AppCompatActivity {
 
     // Kiểm tra quyền truy cập bộ nhớ
     private void checkPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            openGallery(); // Trực tiếp mở gallery nếu không yêu cầu quyền
-            return;
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            openGallery(); // Mở gallery nếu đã có quyền
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_MEDIA_IMAGES}, MY_REQUEST_CODE);
+            } else {
+                openGallery();
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_REQUEST_CODE);
+            } else {
+                openGallery();
+            }
         } else {
-            ActivityCompat.requestPermissions(this, storage_permissions, MY_REQUEST_CODE); // Yêu cầu quyền truy cập
+            openGallery();
         }
     }
+
 
     // Mở thư viện ảnh
     private void openGallery() {
@@ -175,17 +186,33 @@ public class UploadFileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<ImageUpload>> call, Response<List<ImageUpload>> response) {
                 mProgressDialog.dismiss();
-                if (response.body() != null && response.body().size() > 0) {
+                Log.d(TAG, "onResponse: code = " + response.code());
+
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     ImageUpload imageUpload = response.body().get(0);
+                    Log.d(TAG, "onResponse: Upload success: " + imageUpload.getAvatar());
+
                     textViewUsername.setText(imageUpload.getUsername());
                     Glide.with(UploadFileActivity.this)
                             .load(imageUpload.getAvatar())
-                            .into(imageViewUpload); // Hiển thị ảnh tải lên
+                            .into(imageViewUpload);
+
                     Toast.makeText(UploadFileActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(UploadFileActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onResponse: Upload failed - response body is null or empty");
+
+                    try {
+                        if (response.errorBody() != null) {
+                            Log.e(TAG, "onResponse errorBody: " + response.errorBody().string());
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "onResponse: errorBody read failed", e);
+                    }
+
+                    Toast.makeText(UploadFileActivity.this, "Upload failed - check server response", Toast.LENGTH_SHORT).show();
                 }
             }
+
 
             @Override
             public void onFailure(Call<List<ImageUpload>> call, Throwable t) {

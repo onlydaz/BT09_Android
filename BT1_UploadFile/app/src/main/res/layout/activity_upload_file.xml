@@ -44,18 +44,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Ảnh đại diện -->
-    <ImageView
+    <!-- Ảnh đại diện - CircleImageView -->
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgAvatar"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginTop="40dp"
-        android:src="@drawable/ic_profile"
-        android:scaleType="fitCenter"
+        android:src="@drawable/ic_profile2"
         app:layout_constraintTop_toBottomOf="@id/editUserName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/circle_background"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Button Chọn file -->
     <Button
@@ -96,16 +94,14 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- ImageView Choose Image -->
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgChoose"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="10dp"
-        android:src="@drawable/ic_profile"
-        android:scaleType="centerCrop"
+        android:src="@drawable/ic_profile2"
         app:layout_constraintTop_toBottomOf="@id/tvUsername"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/circle_background"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

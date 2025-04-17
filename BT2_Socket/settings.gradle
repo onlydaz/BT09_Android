@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BT2_Socket"
-include(":app")
- 
+rootProject.name = "socket"
+include ':app'

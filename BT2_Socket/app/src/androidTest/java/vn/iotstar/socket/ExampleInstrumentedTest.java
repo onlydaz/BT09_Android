@@ -1,4 +1,4 @@
-package vn.iotstar.bt2_socket;
+package vn.iotstar.socket;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("vn.iotstar.bt2_socket", appContext.getPackageName());
+        assertEquals("vn.iotstar.socket", appContext.getPackageName());
     }
 }

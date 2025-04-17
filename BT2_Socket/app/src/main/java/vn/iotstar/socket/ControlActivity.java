@@ -1,10 +1,11 @@
-package vn.iotstar.bt2_socket;
+package vn.iotstar.socket;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +15,14 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.io.IOException;
 import java.util.UUID;
-
+import android.Manifest;
 public class ControlActivity extends AppCompatActivity {
     ImageButton btnTb1, btnTb2, btnDis;
     TextView txt1, txtMAC;
@@ -55,7 +57,7 @@ public class ControlActivity extends AppCompatActivity {
         btnTb1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                thietTbil(); // Gọi hàm điều khiển thiết bị 1
+                thietTbi1(); // Gọi hàm điều khiển thiết bị 1
             }
         });
         btnTb2.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +75,7 @@ public class ControlActivity extends AppCompatActivity {
     }
 
     // Hàm điều khiển thiết bị 1
-    private void thietTbil() {
+    private void thietTbi1() {
         if (btSocket != null) {
             try {
                 if (flaglamp1 == 0) {
@@ -140,6 +142,13 @@ public class ControlActivity extends AppCompatActivity {
             try {
                 if (btSocket == null || !isBtConnected) {
                     myBluetooth = BluetoothAdapter.getDefaultAdapter();
+
+                    // Kiểm tra quyền trước khi truy cập Bluetooth
+                    if (ActivityCompat.checkSelfPermission(ControlActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(ControlActivity.this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, 1);
+                        return null; // Dừng lại nếu chưa có quyền
+                    }
+
                     BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(address);
                     btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
@@ -150,6 +159,7 @@ public class ControlActivity extends AppCompatActivity {
             }
             return null;
         }
+
 
         @Override
         protected void onPostExecute(Void result) {
